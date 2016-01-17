@@ -20,13 +20,21 @@
     <input type='submit' value='Submit' class="btn btn-info"/>
 </form>
 
-<h2>{{ test }}</h2>
-{% if test != "" %}
-    <img src={{test}} class="img-responsive" alt="Responsive image">
+{% if debugText == "invalid url" %}
+    <h3>{{debugText}}</h3>
 {% endif %}
-<h4>{{ tags }}</h4>
 
-<iframe src="https://embed.spotify.com/?uri=spotify:user:119012324:playlist:3A47zlBzaDnZ3xE5Wk6qb5" width="300" height="380" frameborder="0" allowtransparency="true"></iframe>
+{% if imgsrc != "" %}
+    <h3>Your Image:</h3>
+    <img src={{imgsrc}} class="img-responsive" alt="Responsive image">
+{% endif %}
+
+<br/>
+
+{% if playlistURI != "" %}
+    <h3>Your custom playlist:</h3>
+    <iframe src={{playlistURI}} width="300" height="380" frameborder="0" allowtransparency="true"></iframe>
+{% endif %}
 <!--<div class="row">
     <div class="col-md-4">
         <h2>Getting started</h2>

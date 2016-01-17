@@ -26,33 +26,32 @@ def home(request):
     else:
         form = PostForm(request.POST)  # Bind data from request.POST into a PostForm
         if form.is_valid():
-            content = form.cleaned_data['content']
+            imgURL = form.cleaned_data['content']
             app_id = "DbZ4NzfrPL-K_CHHf4y4srnvBUSgMo4Dz9BIbeXt"
             app_secret = "crjTy-8St_kiFkL0wZZCFyrcoWJyOdets8Fa1BNi"
             clarifai_api = ClarifaiApi(app_id,app_secret)
             tags = ''
+            embedLink = ''
             try:
-                result = clarifai_api.tag_image_urls(content)
-            except:
+                result = clarifai_api.tag_image_urls(imgURL)
+            except: #if url is invalid based on clarifai API call
                 tags = 'invalid url'
-                content = ''
+                imgURL = ''
             if tags!='invalid url':
                 tagList = result['results'][0]['result']['tag']['classes']
-                for tag in tagList:
-                    tags += tag + ' '
                 bestGenre = imgscore(tagList,genres)
-            r = requests.get('https://api.spotify.com/v1/search?q=%22afrobeat%22&type=playlist')
-            jsonStuff = r.json()
-            #playlistInfo = json.loads(jsonFile)
-            #tags = jsonStuff['playlists']['items'][0]['uri']
-            tags = bestGenre
+                r = requests.get('https://api.spotify.com/v1/search?q=%22'+bestGenre+'%22&type=playlist')
+                jsonStuff = r.json()
+                uri = jsonStuff['playlists']['items'][0]['uri']
+                embedLink = "https://embed.spotify.com/?uri="+uri
             return render(
                 request,
                 'app/index.html',
                 {
                     'form': form,
-                    'test': content,
-                    'tags': tags,
+                    'imgsrc': imgURL,
+                    'debugText': tags,
+                    'playlistURI': embedLink,
                 }
             )
     return render(
@@ -60,8 +59,9 @@ def home(request):
         'app/index.html',
         {
             'form': form,
-            'test': '',
-            'tags': '',
+            'imgsrc': '',
+            'debugText': '',
+            'playlistURI': '',
         }
     )
 
