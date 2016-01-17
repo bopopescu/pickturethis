@@ -10,6 +10,7 @@ from app.forms import PostForm
 from django.http import HttpResponseRedirect
 from clarifai.client import ClarifaiApi
 import requests
+import json
 
 def home(request):
     """Renders the home page."""
@@ -33,6 +34,10 @@ def home(request):
                 tagList = result['results'][0]['result']['tag']['classes']
                 for tag in tagList:
                     tags += tag + ' '
+            r = requests.get('https://api.spotify.com/v1/search?q=%22afrobeat%22&type=playlist')
+            jsonStuff = r.json()
+            #playlistInfo = json.loads(jsonFile)
+            tags = jsonStuff['playlists']['items'][0]['uri']
             return render(
                 request,
                 'app/index.html',
