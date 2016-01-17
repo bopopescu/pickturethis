@@ -7,7 +7,8 @@
     <p class="lead">Django is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
     <p><a href="https://www.djangoproject.com/" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
 </div>-->
-
+<h2>Photo-based music discovery</h2>
+<h4>Paste in a URL to a photo, and get a music playlist tailored to capture that moment.</h4>
 <br />
 
 <form action='' method='post'> 
@@ -16,8 +17,8 @@
          <label for="id_content">Image URL:</label>
          <input name="content" id="id_content" class="form-control" type="text" maxlength="256" />
     <!--{{ form }}-->
-    </div>
-    <input type='submit' value='Submit' class="btn btn-info"/>
+    </div> 
+    <input type='submit' value='Find Songs!' class="btn btn-info"/>
 </form>
 
 {% if debugText == "invalid url" %}

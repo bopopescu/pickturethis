@@ -52,6 +52,7 @@ def home(request):
                     'imgsrc': imgURL,
                     'debugText': tags,
                     'playlistURI': embedLink,
+                    'year':datetime.now().year,
                 }
             )
     return render(
@@ -62,6 +63,7 @@ def home(request):
             'imgsrc': '',
             'debugText': '',
             'playlistURI': '',
+            'year':datetime.now().year,
         }
     )
 
