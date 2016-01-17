@@ -31,6 +31,7 @@
   <ItemGroup>
     <Compile Include="app\forms.py" />
     <Compile Include="app\models.py" />
+    <Compile Include="app\Score.py" />
     <Compile Include="app\tests.py" />
     <Compile Include="app\views.py" />
     <Compile Include="app\__init__.py" />
@@ -52,6 +53,7 @@
     <Folder Include="DjangoWebProject\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\vectors.bin" />
     <Content Include="db.sqlite3" />
     <Content Include="requirements.txt" />
     <Content Include="app\static\app\content\bootstrap.css" />

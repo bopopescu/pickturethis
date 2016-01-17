@@ -11,6 +11,12 @@ from django.http import HttpResponseRedirect
 from clarifai.client import ClarifaiApi
 import requests
 import json
+import gensim
+import os.path
+
+BASE = os.path.dirname(os.path.abspath(__file__))
+word_model = gensim.models.Word2Vec.load_word2vec_format(os.path.join(BASE, 'vectors.bin'),binary=True)
+genres = ['abstract', 'accordion', 'afrikaans', 'afrobeat', 'ambient', 'andean', 'anime', 'axe', 'balearic', 'banda', 'bangla', 'barbershop', 'baroque', 'bassline', 'bebop', 'bemani', 'bhangra', 'bluegrass', 'blues', 'bolero', 'boogaloo', 'bounce', 'breakbeat', 'breaks', 'britpop', 'broadway', 'byzantine', 'cabaret', 'cajun', 'calypso', 'cantopop', 'capoeira', 'carnatic', 'ccm', 'cello', 'celtic', 'chanson', 'choral', 'choro', 'christmas', 'clarinet', 'classical', 'comedy', 'comic', 'commons', 'consort', 'corrosion', 'country', 'dancehall', 'demoscene', 'desi', 'didgeridoo', 'disco', 'dixieland', 'downtempo', 'drama', 'drone', 'dub', 'ebm', 'edm', 'electro', 'electronic', 'electronica', 'emo', 'environmental', 'eurovision', 'exotica', 'experimental', 'fado', 'fake', 'filmi', 'flamenco', 'folk', 'footwork', 'freestyle', 'funk', 'gabba', 'galego', 'gamelan', 'glitch', 'gospel', 'grime', 'grindcore', 'grunge', 'guidance', 'hardcore', 'harp', 'hawaiian', 'healing', 'hollywood', 'house', 'idol', 'industrial', 'jazz', 'jerk', 'judaica', 'juggalo', 'jungle', 'klezmer', 'latin', 'lds', 'lilith', 'liturgical', 'lounge', 'lowercase', 'maghreb', 'magyar', 'mallet', 'mambo', 'medieval', 'meditation', 'melancholia', 'merengue', 'metal', 'metalcore', 'minimal', 'mizrahi', 'monastic', 'morna', 'motivation', 'motown', 'neoclassical', 'nepali', 'neurofunk', 'ninja', 'noise', 'nursery', 'oi', 'opera', 'oratory', 'orchestral', 'outsider']
 
 def home(request):
     """Renders the home page."""
@@ -34,10 +40,12 @@ def home(request):
                 tagList = result['results'][0]['result']['tag']['classes']
                 for tag in tagList:
                     tags += tag + ' '
+                bestGenre = imgscore(tagList,genres)
             r = requests.get('https://api.spotify.com/v1/search?q=%22afrobeat%22&type=playlist')
             jsonStuff = r.json()
             #playlistInfo = json.loads(jsonFile)
-            tags = jsonStuff['playlists']['items'][0]['uri']
+            #tags = jsonStuff['playlists']['items'][0]['uri']
+            tags = bestGenre
             return render(
                 request,
                 'app/index.html',
@@ -84,3 +92,18 @@ def about(request):
             'year':datetime.now().year,
         })
     )
+
+
+def imgscore(words,genres):
+    l = 0.0
+    summ = []
+    for genre in genres:
+        for word in words:
+            try:
+                simScore = word_model.similarity(genre,word)
+                l += simScore
+            except:
+                 pass
+        summ.append(l)
+        l = 0
+    return(genres[summ.index(max(summ))])
